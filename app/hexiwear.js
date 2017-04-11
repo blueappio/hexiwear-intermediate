@@ -94,7 +94,7 @@ var Hexiwear = function () {
 
 	/* ------- Hexiwear Handling Functions ------- */
 	
-	Hexiwear.prototype.readMotion = function() {
+    Hexiwear.prototype.readMotion = function() {
 		if (self.motionService) {
 			self.motionService.getCharacteristic(ACCELEROMETER)
 				.then(characteristic => {
@@ -103,9 +103,9 @@ var Hexiwear = function () {
                 	return characteristic.readValue();
             	})
             	.then(data => {
-                 	self.motionData.x = value.getInt16(0, true) / 100;
-                   	self.motionData.y = value.getInt16(2, true) / 100;
-                  	self.motionData.z = value.getInt16(4, true) / 100;
+                 	self.motionData.x = data.getInt16(0, true) / 100;
+                   	self.motionData.y = data.getInt16(2, true) / 100;
+                  	self.motionData.z = data.getInt16(4, true) / 100;
                    	self.updateUI();
             	})
            		.catch(error => {
