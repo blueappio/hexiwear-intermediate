@@ -18,6 +18,13 @@ function mainController($scope) {
     main.hexiwear.updateUI = () => {
         $scope.$apply();
     };
+    
+	/* Calling refresh data function */
+//     setInterval(() => {
+//         if($scope.hexiwear.connected != undefined){
+//             $scope.hexiwear.refreshValues();
+//         }
+//     },1000);
 
     function isBluetoothEnabled() {
         if (navigator.bluetooth) {

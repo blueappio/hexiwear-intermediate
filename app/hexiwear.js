@@ -26,6 +26,8 @@ var Hexiwear = function () {
         self.connected=false;
         self.motionService = undefined;
         self.motionData = {};
+        self.name = undefined;
+        self.id = undefined;
         self.manufacturerName = undefined;
         self.currentMode = undefined;
         self.paired = false;
@@ -36,8 +38,8 @@ var Hexiwear = function () {
         let options = {
         	filters: [{name: DEVICE_NAME}],
         	optionalServices: [
-        		MOTION_SERVICE,
-        		DEVICE_INFORMATION_SERVICE
+        		DEVICE_INFORMATION_SERVICE,
+        		MOTION_SERVICE
         	]
         };
         
@@ -46,52 +48,42 @@ var Hexiwear = function () {
         /* Connecting to the device */
             .then(function (device) {
                 self.bluetoothDevice = device;
+                self.name = device.name;
+                self.id = device.id; 
                 return device.gatt.connect();
             })
             .then(function (server) {
-                console.log("Discovering services");
                 self.connected = true;
+                
+                console.log("Discovering services");
                 
                 /* Getting primary services */
                 return Promise.all([
                     /* Getting device information data service */
-//                     server.getPrimaryService(DEVICE_INFORMATION_SERVICE)
-//                         .then(function (service) {
-//                             return service.getCharacteristic(MANUFACTURER_NAME);
-//                          }) 
-//             			.then(characteristic => {
-//                 			// Got characteristic.
-//                 			// Read the value we want.
-//                 			return characteristic.readValue();
-//             			})
-//             			.then(data => {
-//                   			/* Parsing characteristic readout */
-//                     		self.manufacturerName = dataToString(data);
-//                     		console.log("Got data: " + self.manufacturerName);
-// //                        		self.updateUI();
-//             			})
-//             			.catch(error => {
-//                 			console.log('Reading device info data failed. Error: ' + JSON.stringify(error));
-//             			}),
-                    /* Getting motion data service */
-                    server.getPrimaryService(MOTION_SERVICE)
+                    server.getPrimaryService(DEVICE_INFORMATION_SERVICE)
                         .then(function (service) {
-							return service.getCharacteristic(MOTION_SERVICE);
-                        })
-                        .then(characteristic => {
+                            return service.getCharacteristic(MANUFACTURER_NAME);
+                         }) 
+            			.then(characteristic => {
                 			// Got characteristic.
                 			// Read the value we want.
                 			return characteristic.readValue();
             			})
             			.then(data => {
-                  			self.motionData.x = value.getInt16(0, true) / 100;
-                     		self.motionData.y = value.getInt16(2, true) / 100;
-                     		self.motionData.z = value.getInt16(4, true) / 100;
-//                      		self.updateUI();
+                  			/* Parsing characteristic readout */
+                    		self.manufacturerName = dataToString(data);
+                    		console.log("Got data: " + self.manufacturerName);
+                       		self.updateUI();
             			})
             			.catch(error => {
-                			console.log('Reading motion data failed. Error: ' + JSON.stringify(error));
-            			})
+                			console.log('Reading device info data failed. Error: ' + JSON.stringify(error));
+            			}),
+                    /* Getting motion data service */
+                    server.getPrimaryService(MOTION_SERVICE)
+                        .then(function (service) {
+                        	self.motionService = service;
+							self.readMotion();
+                        })
                 ]);
                 /* Error handling function */
             }, function (error) {
@@ -101,6 +93,26 @@ var Hexiwear = function () {
     };
 
 	/* ------- Hexiwear Handling Functions ------- */
+	
+	Hexiwear.prototype.readMotion = function() {
+		if (self.motionService) {
+			self.motionService.getCharacteristic(ACCELEROMETER)
+				.then(characteristic => {
+                	// Got characteristic.
+               		// Read the value we want.
+                	return characteristic.readValue();
+            	})
+            	.then(data => {
+                 	self.motionData.x = value.getInt16(0, true) / 100;
+                   	self.motionData.y = value.getInt16(2, true) / 100;
+                  	self.motionData.z = value.getInt16(4, true) / 100;
+                   	self.updateUI();
+            	})
+           		.catch(error => {
+                	console.log('Reading motion data failed. Error: ' + JSON.stringify(error));
+            	})
+		}
+	}
 
     /* Refresh function for updating data */
     Hexiwear.prototype.refreshValues = function() {

@@ -12,10 +12,13 @@
     <button ng-click="main.buttonClicked()">Find Device</button>
     <ul class="unstyled">
         <li>
-            Name: {{main.Name}}
+            Name: {{main.hexiwear.name}}
         </li>
         <li>
-            Id: {{main.Id}}
+            Id: {{main.hexiwear.id}}
+        </li>
+        <li>
+            Manufacturer: {{main.hexiwear.manufacturerName}}
         </li>
         <li>
             Accelerometer:
