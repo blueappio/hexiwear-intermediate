@@ -3,28 +3,28 @@ angular.module('BlueAppDemo', [])
 
 function mainController($scope) {
     var main = this;
-    main.hexiwear = window.hexiwear;
-
-    main.buttonClicked = function () {
-        if (!isBluetoothEnabled()) {
-            alert('Bluetooth Not Supported');
-            return;
-        }
-
-		main.hexiwear.connect();
-    }
     
-    /* UI update function */
-    main.hexiwear.updateUI = () => {
-        $scope.$apply();
-    };
+    if (isBluetoothEnabled) {
+    	main.hexiwear = window.hexiwear;
     
-	/* Calling refresh data function */
-    setInterval(() => {
-        if(main.hexiwear && main.hexiwear.connected != undefined){
-            main.hexiwear.refreshValues();
-        }
-    },1000);
+		/* UI update function */
+		main.hexiwear.updateUI = () => {
+			$scope.$apply();
+   	 	};
+    
+		/* Define the reoccurring event. */
+   	 	setInterval(function() {
+    	    if(main.hexiwear && main.hexiwear.connected != undefined){
+    	        main.hexiwear.refreshValues();
+    	    }
+    	},1000);
+    
+    	main.buttonClicked = function() {
+			/* Start the connection. */
+			main.hexiwear.connect();
+    	}
+	}
+	
 
     function isBluetoothEnabled() {
         if (navigator.bluetooth) {

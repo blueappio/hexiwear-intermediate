@@ -47,7 +47,7 @@ var Hexiwear = function () {
             .then(function (device) {
                 self.bluetoothDevice = device;
                 self.name = device.name;
-                self.id = device.id; 
+                self.id = device.uuid; 
                 return device.gatt.connect();
             })
             .then(function (server) {
@@ -99,7 +99,7 @@ var Hexiwear = function () {
 		}
 	}
 	
-    Hexiwear.prototype.readMotion = function() {
+	Hexiwear.prototype.readMotion = function() {
 		if (self.motionService) {
 			self.motionService.getCharacteristic(ACCELEROMETER)
 				.then(characteristic => {
