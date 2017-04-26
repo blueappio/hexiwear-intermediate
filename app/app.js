@@ -8,7 +8,7 @@ function mainController($scope) {
     	main.hexiwear = window.hexiwear;
     
 		/* UI update function */
-		main.hexiwear.updateUI = () => {
+		main.hexiwear.updateUI = function() {
 			$scope.$apply();
    	 	};
     
