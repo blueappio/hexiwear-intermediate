@@ -82,18 +82,18 @@ var Hexiwear = function () {
 	Hexiwear.prototype.readDeviceInformation = function() {
 		if (self.deviceInformationService) {
 			self.deviceInformationService.getCharacteristic(MANUFACTURER_NAME)
-            	.then(characteristic => {
+            	.then(function(characteristic) {
               		// Got characteristic.
                 	// Read the value we want.
                		return characteristic.readValue();
             	})
-            	.then(data => {
+            	.then(function(data) {
                 	/* Parsing characteristic readout */
                 	self.manufacturerName = dataToString(data);
                 	console.log("Got data: " + self.manufacturerName);
                		self.updateUI();
             	})
-            	.catch(error => {
+            	.catch(function(error) {
              		console.log('Reading device info data failed. Error: ' + JSON.stringify(error));
          		});
 		}
@@ -102,18 +102,18 @@ var Hexiwear = function () {
 	Hexiwear.prototype.readMotion = function() {
 		if (self.motionService) {
 			self.motionService.getCharacteristic(ACCELEROMETER)
-				.then(characteristic => {
+				.then(function(characteristic) {
                 	// Got characteristic.
                		// Read the value we want.
                 	return characteristic.readValue();
             	})
-            	.then(data => {
+            	.then(function(data) {
                  	self.motionData.x = data.getInt16(0, true) / 100;
-                   	self.motionData.y = data.getInt16(2, true) / 100;
+                   	self.motionDecata.y = data.getInt16(2, true) / 100;
                   	self.motionData.z = data.getInt16(4, true) / 100;
                    	self.updateUI();
             	})
-           		.catch(error => {
+           		.catch(function(error) {
                 	console.log('Reading motion data failed. Error: ' + JSON.stringify(error));
             	});
 		}
